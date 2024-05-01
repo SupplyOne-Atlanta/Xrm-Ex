@@ -1578,6 +1578,22 @@ export namespace XrmEx {
           );
         }
       }
+
+      async update(options: string) {
+        try {
+          if (!this.Id || !this.EntityType) return null;
+          const record = await Xrm.WebApi.updateRecord(
+            this.EntityType,
+            this.Id,
+            options
+          );
+          return record;
+        } catch (error: any) {
+          throw new Error(
+            `XrmEx.${XrmEx.getFunctionName()}:\n${error.message}`
+          );
+        }
+      }
       /**
        * Adds an additional custom filter to the lookup, with the "AND" filter operator.
        * @param filter Specifies the filter, as a serialized FetchXML "filter" node.
