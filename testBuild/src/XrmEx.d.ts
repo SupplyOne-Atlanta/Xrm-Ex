@@ -579,6 +579,24 @@ export declare namespace XrmEx {
              */
             retrieve(options: string): Promise<any>;
             /**
+             * Updates an entity record.
+             * @param data (required) A JSON object containing key : value pairs where key is the attribute of the table
+             * and value is the value of the attribute you wish to update.
+             * @example <caption>data example:</caption>
+             * var data =
+             *   {
+             *     "name": "Updated Sample Account ",
+             *     "creditonhold": true,
+             *     "address1_latitude": 47.639583,
+             *     "description": "This is the updated description of the sample account",
+             *     "revenue": 6000000,
+             *     "accountcategorycode": 2
+             *   };
+             * @returns On success, returns a promise object with entityType (string, table name of record) and id (string, GUID id of the record)
+             * @see {@link https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/xrm-webapi/updaterecord}
+             */
+            update(data: object): Promise<any>;
+            /**
              * Adds an additional custom filter to the lookup, with the "AND" filter operator.
              * @param filter Specifies the filter, as a serialized FetchXML "filter" node.
              * @param entityLogicalName (Optional) The logical name of the entity.
