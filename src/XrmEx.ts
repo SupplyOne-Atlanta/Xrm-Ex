@@ -1604,7 +1604,7 @@ export namespace XrmEx {
 
           let record = null;
 
-          if (isOffline) {
+          if (isOffline() === true) {
             record = await Xrm.WebApi.offline.updateRecord(
               this.EntityType,
               this.Id,
