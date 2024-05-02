@@ -41,6 +41,9 @@ export namespace XrmEx {
   export function throwError(errorMessage: string): never {
     throw new Error(errorMessage);
   }
+  export function isOffline(): boolean {
+    return Xrm.Utility.getGlobalContext().client.isOffline();
+  }
   /**
    * Returns the name of the calling function.
    * @returns {string} - The name of the calling function.
@@ -1598,11 +1601,23 @@ export namespace XrmEx {
       async update(data: object) {
         try {
           if (!this.Id || !this.EntityType || !data) return null;
-          const record = await Xrm.WebApi.updateRecord(
-            this.EntityType,
-            this.Id,
-            data
-          );
+
+          let record = null;
+
+          if (isOffline) {
+            record = await Xrm.WebApi.offline.updateRecord(
+              this.EntityType,
+              this.Id,
+              data
+            );
+          } else {
+            record = await Xrm.WebApi.updateRecord(
+              this.EntityType,
+              this.Id,
+              data
+            );
+          }
+
           return record;
         } catch (error: any) {
           throw new Error(

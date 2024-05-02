@@ -29,6 +29,7 @@ declare namespace XrmEx {
      * @throws {Error} - Always throws an error with the given error message.
      */
     function throwError(errorMessage: string): never;
+    function isOffline(): boolean;
     /**
      * Returns the name of the calling function.
      * @returns {string} - The name of the calling function.
