@@ -41,8 +41,25 @@ export namespace XrmEx {
   export function throwError(errorMessage: string): never {
     throw new Error(errorMessage);
   }
+  /**
+   * Returns current state of client whether it's online or offline. This method
+   * is of qustionable usefulness for it provides little to no benefit over using
+   * the native Xrm SDK method. You decide, dear programmer!
+   * @returns boolean
+   */
   export function isOffline(): boolean {
     return Xrm.Utility.getGlobalContext().client.isOffline();
+  }
+  /**
+   * Returns native SDK WebApi appropriate for the current client state
+   * @returns Xrm.WebApiOffline or Xrm.WebApiOnline
+   */
+  function getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline {
+    if (isOffline() === true) {
+      return Xrm.WebApi.offline;
+    } else {
+      return Xrm.WebApi.online;
+    }
   }
   /**
    * Returns the name of the calling function.
@@ -1595,30 +1612,22 @@ export namespace XrmEx {
        *     "revenue": 6000000,
        *     "accountcategorycode": 2
        *   };
-       * @returns On success, returns a promise object with entityType (string, table name of record) and id (string, GUID id of the record)
+       * @returns On success, returns a promise object with entityType (string, table name) and id (string, GUID of the record)
        * @see {@link https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/xrm-webapi/updaterecord}
        */
-      async update(data: object) {
+      async update(data: object): Promise<any> {
         try {
-          if (!this.Id || !this.EntityType || !data) return null;
-
-          let record = null;
-
-          if (isOffline() === true) {
-            record = await Xrm.WebApi.offline.updateRecord(
-              this.EntityType,
-              this.Id,
-              data
-            );
-          } else {
-            record = await Xrm.WebApi.updateRecord(
-              this.EntityType,
-              this.Id,
-              data
-            );
+          if (!this.Id || !this.EntityType || !data) {
+            throwError("Missing required arguments for update method");
           }
 
-          return record;
+          const result = await getXrmWebApi().updateRecord(
+            this.EntityType,
+            this.Id,
+            data
+          );
+
+          return result;
         } catch (error: any) {
           throw new Error(
             `XrmEx.${XrmEx.getFunctionName()}:\n${error.message}`

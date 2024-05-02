@@ -29,6 +29,12 @@ export declare namespace XrmEx {
      * @throws {Error} - Always throws an error with the given error message.
      */
     function throwError(errorMessage: string): never;
+    /**
+     * Returns current state of client whether it's online or offline. This method
+     * is of qustionable usefulness for it provides little to no benefit over using
+     * the native Xrm SDK method. You decide, dear programmer!
+     * @returns boolean
+     */
     function isOffline(): boolean;
     /**
      * Returns the name of the calling function.
@@ -593,7 +599,7 @@ export declare namespace XrmEx {
              *     "revenue": 6000000,
              *     "accountcategorycode": 2
              *   };
-             * @returns On success, returns a promise object with entityType (string, table name of record) and id (string, GUID id of the record)
+             * @returns On success, returns a promise object with entityType (string, table name) and id (string, GUID of the record)
              * @see {@link https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/xrm-webapi/updaterecord}
              */
             update(data: object): Promise<any>;
