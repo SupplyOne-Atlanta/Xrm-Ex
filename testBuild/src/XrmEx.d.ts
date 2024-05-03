@@ -534,6 +534,7 @@ export declare namespace XrmEx {
         export class LookupField extends Field implements Xrm.Attributes.LookupAttribute {
             protected _attribute: Xrm.Attributes.LookupAttribute;
             protected _customFilters: any;
+            protected _isEntityAvailableOffline: boolean | undefined;
             constructor(attribute: string);
             getIsPartyList(): boolean;
             get Attribute(): Xrm.Attributes.LookupAttribute;
@@ -567,6 +568,11 @@ export declare namespace XrmEx {
             setLookupFromRetrieve(selectName: string, retrievedRecord: {
                 [x: string]: any;
             }): void;
+            /**
+             * Returns native SDK WebApi appropriate for the current client state
+             * @returns Xrm.WebApiOffline or Xrm.WebApiOnline
+             */
+            getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline;
             /**
              * Retrieves an entity record.
              * @param options (Optional) OData system query options, $select and $expand, to retrieve your data.
