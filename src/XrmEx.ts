@@ -1105,6 +1105,14 @@ export namespace XrmEx {
         this.Attribute.setValue(value);
       }
 
+      private _debugMode: boolean;
+      public get debugMode(): boolean {
+        return this._debugMode;
+      }
+      public set debugMode(value: boolean) {
+        this._debugMode = value;
+      }
+
       /**
        * Sets a control-local notification message.
        * @param message The message.
@@ -1577,6 +1585,12 @@ export namespace XrmEx {
             this._isEntityAvailableOffline = Xrm.WebApi.isAvailableOffline(
               this.EntityType
             );
+            if (this.debugMode) {
+              openAlertDialog(
+                "getXrmWebApi method debug 1, this._issEntityAvailableOffline === ",
+                String(this._isEntityAvailableOffline)
+              );
+            }
             // If property is still undefined at this point, something is
             // wrong.
             if (this._isEntityAvailableOffline === undefined) {
@@ -1589,6 +1603,12 @@ export namespace XrmEx {
             // Recursive call to self, value should now be either true or false
             this.getXrmWebApi();
           } else if (this._isEntityAvailableOffline === true) {
+            if (this.debugMode) {
+              openAlertDialog(
+                "getXrmWebApi method debug 2, this._issEntityAvailableOffline === ",
+                String(this._isEntityAvailableOffline)
+              );
+            }
             return Xrm.WebApi.offline;
           } else {
             throwError("This entity is not available in offline mode");
