@@ -1574,8 +1574,9 @@ export namespace XrmEx {
       getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline {
         if (isOffline() === true) {
           if (this._isEntityAvailableOffline === undefined) {
-            this._isEntityAvailableOffline =
-              Xrm.WebApi.offline.isAvailableOffline(this.EntityType);
+            this._isEntityAvailableOffline = Xrm.WebApi.isAvailableOffline(
+              this.EntityType
+            );
             // If property is still undefined at this point, something is
             // wrong.
             if (this._isEntityAvailableOffline === undefined) {
