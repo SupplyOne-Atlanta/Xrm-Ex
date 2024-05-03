@@ -33,6 +33,9 @@ type EntityReference = {
   entityType: string;
 };
 export namespace XrmEx {
+  interface XrmExWebApiOffline extends Xrm.WebApiOffline {
+    isAvailableOffline: boolean;
+  }
   /**
    * Throws an error with the given error message.
    * @param {string} errorMessage - The error message to throw.
@@ -50,17 +53,6 @@ export namespace XrmEx {
   export function isOffline(): boolean {
     return Xrm.Utility.getGlobalContext().client.isOffline();
   }
-  // /**
-  //  * Returns native SDK WebApi appropriate for the current client state
-  //  * @returns Xrm.WebApiOffline or Xrm.WebApiOnline
-  //  */
-  // function getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline {
-  //   if (isOffline() === true) {
-  //     return Xrm.WebApi.offline;
-  //   } else {
-  //     return Xrm.WebApi.online;
-  //   }
-  // }
   /**
    * Returns the name of the calling function.
    * @returns {string} - The name of the calling function.
@@ -1104,15 +1096,6 @@ export namespace XrmEx {
       public set Value(value: any) {
         this.Attribute.setValue(value);
       }
-
-      private _debugMode: boolean;
-      public get debugMode(): boolean {
-        return this._debugMode;
-      }
-      public set debugMode(value: boolean) {
-        this._debugMode = value;
-      }
-
       /**
        * Sets a control-local notification message.
        * @param message The message.
@@ -1582,15 +1565,13 @@ export namespace XrmEx {
       getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline {
         if (isOffline() === true) {
           if (this._isEntityAvailableOffline === undefined) {
-            this._isEntityAvailableOffline = Xrm.WebApi.isAvailableOffline(
-              this.EntityType
-            );
-            if (this.debugMode) {
-              openAlertDialog(
-                "getXrmWebApi method debug 1, this._issEntityAvailableOffline === ",
-                String(this._isEntityAvailableOffline)
-              );
-            }
+            // let offline: Xrm.WebApi = Xrm.WebApi.offline as Xrm.WebApi;
+            // this._isEntityAvailableOffline = offline.isAvailableOffline(
+            //   this.EntityType
+            // );
+            this._isEntityAvailableOffline = (<Xrm.WebApi>(
+              Xrm.WebApi.offline
+            )).isAvailableOffline(this.EntityType);
             // If property is still undefined at this point, something is
             // wrong.
             if (this._isEntityAvailableOffline === undefined) {
@@ -1603,12 +1584,6 @@ export namespace XrmEx {
             // Recursive call to self, value should now be either true or false
             this.getXrmWebApi();
           } else if (this._isEntityAvailableOffline === true) {
-            if (this.debugMode) {
-              openAlertDialog(
-                "getXrmWebApi method debug 2, this._issEntityAvailableOffline === ",
-                String(this._isEntityAvailableOffline)
-              );
-            }
             return Xrm.WebApi.offline;
           } else {
             throwError("This entity is not available in offline mode");

@@ -426,9 +426,6 @@ declare namespace XrmEx {
              */
             get Value(): any;
             set Value(value: any);
-            private _debugMode;
-            get debugMode(): boolean;
-            set debugMode(value: boolean);
             /**
              * Sets a control-local notification message.
              * @param message The message.
