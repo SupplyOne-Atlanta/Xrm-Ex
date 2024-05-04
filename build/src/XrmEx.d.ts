@@ -30,12 +30,16 @@ declare namespace XrmEx {
      */
     function throwError(errorMessage: string): never;
     /**
-     * Returns current state of client whether it's online or offline. This method
-     * is of qustionable usefulness for it provides little to no benefit over using
-     * the native Xrm SDK method. You decide, dear programmer!
+     * Returns current state of client whether it's online or offline.
      * @returns boolean
      */
-    function isOffline(): boolean;
+    function isClientOffline(): boolean;
+    function isEntityAvailableOffline(): boolean;
+    /**
+     * Returns native SDK WebApi appropriate for the current client state
+     * @returns Xrm.WebApiOffline or Xrm.WebApiOnline
+     */
+    function getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline;
     /**
      * Returns the name of the calling function.
      * @returns {string} - The name of the calling function.
@@ -534,7 +538,6 @@ declare namespace XrmEx {
         export class LookupField extends Field implements Xrm.Attributes.LookupAttribute {
             protected _attribute: Xrm.Attributes.LookupAttribute;
             protected _customFilters: any;
-            protected _isEntityAvailableOffline: boolean | undefined;
             constructor(attribute: string);
             getIsPartyList(): boolean;
             get Attribute(): Xrm.Attributes.LookupAttribute;
@@ -568,12 +571,6 @@ declare namespace XrmEx {
             setLookupFromRetrieve(selectName: string, retrievedRecord: {
                 [x: string]: any;
             }): void;
-            tsIgFunct(): boolean;
-            /**
-             * Returns native SDK WebApi appropriate for the current client state
-             * @returns Xrm.WebApiOffline or Xrm.WebApiOnline
-             */
-            getXrmWebApi(): any;
             /**
              * Retrieves an entity record.
              * @param options (Optional) OData system query options, $select and $expand, to retrieve your data.
