@@ -1558,24 +1558,35 @@ export namespace XrmEx {
           },
         ];
       }
+      tsIgFunct(): boolean {
+        // @ts-ignore
+        return Xrm.WebApi.offline.isAvailableOffline(this.EntityType);
+      }
       /**
        * Returns native SDK WebApi appropriate for the current client state
        * @returns Xrm.WebApiOffline or Xrm.WebApiOnline
        */
       getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline {
         if (isOffline() === true) {
+          if (!this.EntityType) {
+            XrmEx.throwError(
+              "Missing required property EntityType needed for offline methods"
+            );
+          }
           if (this._isEntityAvailableOffline === undefined) {
+            this._isEntityAvailableOffline = this.tsIgFunct();
+            // Method 1
             // let offline: Xrm.WebApi = Xrm.WebApi.offline as Xrm.WebApi;
             // this._isEntityAvailableOffline = offline.isAvailableOffline(
             //   this.EntityType
             // );
-            this._isEntityAvailableOffline = (<Xrm.WebApi>(
-              Xrm.WebApi.offline
-            )).isAvailableOffline(this.EntityType);
-            // If property is still undefined at this point, something is
-            // wrong.
+            // Method 2
+            // this._isEntityAvailableOffline = (<Xrm.WebApi>(
+            //   Xrm.WebApi.offline
+            // )).isAvailableOffline(this.EntityType);
+
             if (this._isEntityAvailableOffline === undefined) {
-              throwError(
+              XrmEx.throwError(
                 "Unable to determine offline availability for entity: " +
                   this.EntityType
               );

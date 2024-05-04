@@ -568,6 +568,7 @@ declare namespace XrmEx {
             setLookupFromRetrieve(selectName: string, retrievedRecord: {
                 [x: string]: any;
             }): void;
+            tsIgFunct(): boolean;
             /**
              * Returns native SDK WebApi appropriate for the current client state
              * @returns Xrm.WebApiOffline or Xrm.WebApiOnline
