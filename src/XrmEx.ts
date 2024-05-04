@@ -1568,41 +1568,35 @@ export namespace XrmEx {
        */
       getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline {
         if (isOffline() === true) {
-          if (!this.EntityType) {
-            XrmEx.throwError(
-              "Missing required property EntityType needed for offline methods"
-            );
-          }
-          if (this._isEntityAvailableOffline === undefined) {
-            this._isEntityAvailableOffline = this.tsIgFunct();
-            // Method 1
-            // let offline: Xrm.WebApi = Xrm.WebApi.offline as Xrm.WebApi;
-            // this._isEntityAvailableOffline = offline.isAvailableOffline(
-            //   this.EntityType
-            // );
-            // Method 2
-            // this._isEntityAvailableOffline = (<Xrm.WebApi>(
-            //   Xrm.WebApi.offline
-            // )).isAvailableOffline(this.EntityType);
-
-            if (this._isEntityAvailableOffline === undefined) {
-              XrmEx.throwError(
-                "Unable to determine offline availability for entity: " +
-                  this.EntityType
-              );
-            }
-
-            // Recursive call to self, value should now be either true or false
-            this.getXrmWebApi();
-          } else if (this._isEntityAvailableOffline === true) {
-            return Xrm.WebApi.offline;
-          } else {
-            throwError("This entity is not available in offline mode");
-          }
+          return Xrm.WebApi.offline;
         } else {
           return Xrm.WebApi.online;
         }
       }
+      // Work in progress below!
+      // getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline {
+      //   if (isOffline() === true) {
+      //     if (this._isEntityAvailableOffline === undefined) {
+      //       this._isEntityAvailableOffline = this.tsIgFunct();
+
+      //       if (this._isEntityAvailableOffline === undefined) {
+      //         XrmEx.throwError(
+      //           "Unable to determine offline availability for entity: " +
+      //             this.EntityType
+      //         );
+      //       }
+
+      //       // Recursive call to self, value should now be either true or false
+      //       this.getXrmWebApi();
+      //     } else if (this._isEntityAvailableOffline === true) {
+      //       return Xrm.WebApi.offline;
+      //     } else {
+      //       throwError("This entity is not available in offline mode");
+      //     }
+      //   } else {
+      //     return Xrm.WebApi.online;
+      //   }
+      // }
       /**
        * Retrieves an entity record.
        * @param options (Optional) OData system query options, $select and $expand, to retrieve your data.
