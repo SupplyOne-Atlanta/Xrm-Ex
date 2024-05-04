@@ -1562,6 +1562,7 @@ export namespace XrmEx {
         // @ts-ignore
         return Xrm.WebApi.offline.isAvailableOffline(this.EntityType);
       }
+      // test
       /**
        * Returns native SDK WebApi appropriate for the current client state
        * @returns Xrm.WebApiOffline or Xrm.WebApiOnline
