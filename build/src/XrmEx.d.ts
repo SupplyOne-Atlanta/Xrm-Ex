@@ -573,7 +573,7 @@ declare namespace XrmEx {
              * Returns native SDK WebApi appropriate for the current client state
              * @returns Xrm.WebApiOffline or Xrm.WebApiOnline
              */
-            getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline;
+            getXrmWebApi(): any;
             /**
              * Retrieves an entity record.
              * @param options (Optional) OData system query options, $select and $expand, to retrieve your data.

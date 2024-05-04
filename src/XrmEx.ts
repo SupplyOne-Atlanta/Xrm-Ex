@@ -1566,7 +1566,8 @@ export namespace XrmEx {
        * Returns native SDK WebApi appropriate for the current client state
        * @returns Xrm.WebApiOffline or Xrm.WebApiOnline
        */
-      getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline {
+      // getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline {
+      getXrmWebApi(): any {
         if (isOffline() === true) {
           return Xrm.WebApi.offline;
         } else {
