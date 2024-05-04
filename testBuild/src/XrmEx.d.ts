@@ -36,6 +36,8 @@ export declare namespace XrmEx {
      * @returns boolean
      */
     function isOffline(): boolean;
+    function setScriptVersion(version: number): void;
+    function getScriptVersion(): number;
     /**
      * Returns the name of the calling function.
      * @returns {string} - The name of the calling function.

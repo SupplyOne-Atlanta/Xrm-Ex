@@ -33,9 +33,7 @@ type EntityReference = {
   entityType: string;
 };
 export namespace XrmEx {
-  interface XrmExWebApiOffline extends Xrm.WebApiOffline {
-    isAvailableOffline: boolean;
-  }
+  let scriptVersion: number = 0;
   /**
    * Throws an error with the given error message.
    * @param {string} errorMessage - The error message to throw.
@@ -52,6 +50,12 @@ export namespace XrmEx {
    */
   export function isOffline(): boolean {
     return Xrm.Utility.getGlobalContext().client.isOffline();
+  }
+  export function setScriptVersion(version: number): void {
+    scriptVersion = version;
+  }
+  export function getScriptVersion(): number {
+    return scriptVersion;
   }
   /**
    * Returns the name of the calling function.
