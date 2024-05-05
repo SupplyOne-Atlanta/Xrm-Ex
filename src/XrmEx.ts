@@ -60,7 +60,11 @@ export namespace XrmEx {
    */
   export function getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline {
     if (isClientOffline() === true) {
-      return Xrm.WebApi.offline;
+      if (isEntityAvailableOffline() === true) {
+        return Xrm.WebApi.offline;
+      } else {
+        throwError("Requested entity is not available offline");
+      }
     } else {
       return Xrm.WebApi.online;
     }
