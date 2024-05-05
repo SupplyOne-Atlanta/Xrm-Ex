@@ -42,13 +42,28 @@ export namespace XrmEx {
     throw new Error(errorMessage);
   }
   /**
-   * Returns current state of client whether it's online or offline. This method
-   * is of qustionable usefulness for it provides little to no benefit over using
-   * the native Xrm SDK method. You decide, dear programmer!
+   * Returns current state of client whether it's online or offline.
    * @returns boolean
    */
-  export function isOffline(): boolean {
+  export function isClientOffline(): boolean {
     return Xrm.Utility.getGlobalContext().client.isOffline();
+  }
+  export function isEntityAvailableOffline(): boolean {
+    if (!this.EntityType) {
+      throwError("Missing requied EntityType");
+    }
+    return (<Xrm.WebApi>Xrm.WebApi.offline).isAvailableOffline(this.EntityType);
+  }
+  /**
+   * Returns native SDK WebApi appropriate for the current client state
+   * @returns Xrm.WebApiOffline or Xrm.WebApiOnline
+   */
+  export function getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline {
+    if (isClientOffline() === true) {
+      return Xrm.WebApi.offline;
+    } else {
+      return Xrm.WebApi.online;
+    }
   }
   /**
    * Returns the name of the calling function.
@@ -1452,7 +1467,6 @@ export namespace XrmEx {
     {
       protected declare _attribute: Xrm.Attributes.LookupAttribute;
       protected _customFilters: any = [];
-      protected _isEntityAvailableOffline: boolean | undefined = undefined;
       constructor(attribute: string) {
         super(attribute);
       }
@@ -1555,47 +1569,6 @@ export namespace XrmEx {
           },
         ];
       }
-      tsIgFunct(): boolean {
-        // @ts-ignore
-        return Xrm.WebApi.offline.isAvailableOffline(this.EntityType);
-      }
-      // test
-      /**
-       * Returns native SDK WebApi appropriate for the current client state
-       * @returns Xrm.WebApiOffline or Xrm.WebApiOnline
-       */
-      // getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline {
-      getXrmWebApi(): any {
-        if (isOffline() === true) {
-          return Xrm.WebApi.offline;
-        } else {
-          return Xrm.WebApi.online;
-        }
-      }
-      // Work in progress below!
-      // getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline {
-      //   if (isOffline() === true) {
-      //     if (this._isEntityAvailableOffline === undefined) {
-      //       this._isEntityAvailableOffline = this.tsIgFunct();
-
-      //       if (this._isEntityAvailableOffline === undefined) {
-      //         XrmEx.throwError(
-      //           "Unable to determine offline availability for entity: " +
-      //             this.EntityType
-      //         );
-      //       }
-
-      //       // Recursive call to self, value should now be either true or false
-      //       this.getXrmWebApi();
-      //     } else if (this._isEntityAvailableOffline === true) {
-      //       return Xrm.WebApi.offline;
-      //     } else {
-      //       throwError("This entity is not available in offline mode");
-      //     }
-      //   } else {
-      //     return Xrm.WebApi.online;
-      //   }
-      // }
       /**
        * Retrieves an entity record.
        * @param options (Optional) OData system query options, $select and $expand, to retrieve your data.
@@ -1651,7 +1624,7 @@ export namespace XrmEx {
             throwError("Missing required arguments for update method");
           }
 
-          const result = await this.getXrmWebApi().updateRecord(
+          const result = await getXrmWebApi().updateRecord(
             this.EntityType,
             this.Id,
             data
