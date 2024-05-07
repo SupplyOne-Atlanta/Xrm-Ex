@@ -1468,10 +1468,10 @@ export namespace XrmEx {
         return this.Attribute.getIsPartyList();
       }
       isEntityAvailableOffline(): boolean {
-        console.log(`XrmEx EntityType is ${this.EntityType}`);
-        // @ts-ignore
-        return Xrm.WebApi.offline.isAvailableOffline(this.EntityType);
-        // return (<Xrm.WebApi>Xrm.WebApi.offline).isAvailableOffline(this.EntityType);
+        // return Xrm.WebApi.offline.isAvailableOffline(this.EntityType);
+        return (<Xrm.WebApi>Xrm.WebApi.offline).isAvailableOffline(
+          this.EntityType
+        );
       }
       get Attribute() {
         return (this._attribute ??=
