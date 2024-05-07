@@ -34,7 +34,6 @@ declare namespace XrmEx {
      * @returns boolean
      */
     function isClientOffline(): boolean;
-    function isEntityAvailableOffline(): boolean;
     /**
      * Returns native SDK WebApi appropriate for the current client state
      * @returns Xrm.WebApiOffline or Xrm.WebApiOnline
@@ -540,6 +539,7 @@ declare namespace XrmEx {
             protected _customFilters: any;
             constructor(attribute: string);
             getIsPartyList(): boolean;
+            isEntityAvailableOffline(): boolean;
             get Attribute(): Xrm.Attributes.LookupAttribute;
             get controls(): Xrm.Collection.ItemCollection<Xrm.Controls.LookupControl>;
             /**Gets the id of the first lookup value*/

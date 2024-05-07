@@ -48,23 +48,13 @@ export namespace XrmEx {
   export function isClientOffline(): boolean {
     return Xrm.Utility.getGlobalContext().client.isOffline();
   }
-  export function isEntityAvailableOffline(): boolean {
-    if (!this.EntityType) {
-      throwError("Missing requied EntityType");
-    }
-    return (<Xrm.WebApi>Xrm.WebApi.offline).isAvailableOffline(this.EntityType);
-  }
   /**
    * Returns native SDK WebApi appropriate for the current client state
    * @returns Xrm.WebApiOffline or Xrm.WebApiOnline
    */
   export function getXrmWebApi(): Xrm.WebApiOffline | Xrm.WebApiOnline {
     if (isClientOffline() === true) {
-      if (isEntityAvailableOffline() === true) {
-        return Xrm.WebApi.offline;
-      } else {
-        throwError("Requested entity is not available offline");
-      }
+      return Xrm.WebApi.offline;
     } else {
       return Xrm.WebApi.online;
     }
@@ -1477,6 +1467,12 @@ export namespace XrmEx {
       getIsPartyList(): boolean {
         return this.Attribute.getIsPartyList();
       }
+      isEntityAvailableOffline(): boolean {
+        // return Xrm.WebApi.offline.isAvailableOffline(this.EntityType);
+        return (<Xrm.WebApi>Xrm.WebApi.offline).isAvailableOffline(
+          this.EntityType
+        );
+      }
       get Attribute() {
         return (this._attribute ??=
           Form.formContext.getAttribute(this.Name) ??
@@ -1626,6 +1622,15 @@ export namespace XrmEx {
         try {
           if (!this.Id || !this.EntityType || !data) {
             throwError("Missing required arguments for update method");
+          }
+
+          if (
+            isClientOffline() === true &&
+            this.isEntityAvailableOffline() === false
+          ) {
+            throwError(
+              `Requested entity ${this.EntityType} is not available offline`
+            );
           }
 
           const result = await getXrmWebApi().updateRecord(
